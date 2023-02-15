@@ -94,8 +94,10 @@ git push
 for images
     npm i @cloudinary/url-gen @cloudinary/react
 for icons
-    npm install @mui/material @emotion/react @emotion/styled
-npm install @mui/icons-material
+    npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+dependency for MUI
+    npm install @fontsource/roboto
+
 
     move   
         "@emotion/react": "^11.10.5"

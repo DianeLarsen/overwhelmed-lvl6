@@ -1,9 +1,10 @@
+
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
+  
   Outlet,
   Navigate,
 } from "react-router-dom";
@@ -16,17 +17,26 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import "./style.scss";
+import { useContext } from "react";
+import { DarkModeContext } from "./context/darkModeContext";
+import { AuthContext } from "./context/authContext";
 
 function App() {
-  const currentUser = true;
+  
+  const {currentUser} = useContext(AuthContext);
+
+const { darkMode } = useContext(DarkModeContext)
 
   const Layout = () => {
     return (
-      <div>
+      <div className={`theme-${darkMode ? "dark" : "light"}`}>
         <Navbar />
         <div style={{ display: "flex" }}>
           <Leftbar />
+          <div style={{flex: 6}}>
           <Outlet />
+          </div>
           <Rightbar />
         </div>
       </div>
