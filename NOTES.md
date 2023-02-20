@@ -14,8 +14,7 @@ npm install dotenv
 npm install express-jwt
 npm install bcrypt
 
-for pics upload
-npm install express ejs body-parser mongoose multer multer-gridfs-storage gridfs-stream method-override
+
 
 
 already installed but can be installed on new computers        
@@ -108,3 +107,10 @@ dependency for MUI
 
 https://www.youtube.com/watch?v=1EuNnZEp2sQ
 
+
+npm prune to remove unneeded node modules, or delete node modules and reinstall
+
+npm install -g depcheck
+then just type
+depcheck .
+in the folder being checked

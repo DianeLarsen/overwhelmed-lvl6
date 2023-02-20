@@ -1,53 +1,53 @@
-
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import {
   createBrowserRouter,
   RouterProvider,
-  
   Outlet,
   Navigate,
 } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
-import Leftbar from "./components/leftbar/Leftbar";
-import Rightbar from "./components/rightbar/Rightbar";
+import LeftBar from "./components/leftBar/LeftBar";
+import RightBar from "./components/rightBar/RightBar";
+import Feed from "./pages/feed/Feed";
+import Welcome from "./pages/welcome/Welcome";
 import Profile from "./pages/profile/Profile";
-import Home from "./pages/home/Home";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
 import "./style.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/authContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-  
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
+  console.log(currentUser)
+  const { darkMode } = useContext(DarkModeContext);
 
-const { darkMode } = useContext(DarkModeContext)
+  const queryClient = new QueryClient();
 
   const Layout = () => {
     return (
-      <div className={`theme-${darkMode ? "dark" : "light"}`}>
-        <Navbar />
-        <div style={{ display: "flex" }}>
-          <Leftbar />
-          <div style={{flex: 6}}>
-          <Outlet />
+      <QueryClientProvider client={queryClient}>
+        <div className={`theme-${darkMode ? "dark" : "light"}`}>
+          <Navbar />
+          <div style={{ display: "flex" }}>
+            <LeftBar />
+            <div style={{ flex: 6 }}>
+              <Outlet />
+            </div>
+            <RightBar />
           </div>
-          <Rightbar />
         </div>
-      </div>
+      </QueryClientProvider>
     );
   };
 
-  const ProtectedRoute = ({children}) => {
+  const ProtectedRoute = ({ children }) => {
     if (!currentUser) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/welcome" />;
     }
-    return children
+
+    return children;
   };
 
   const router = createBrowserRouter([
@@ -61,13 +61,17 @@ const { darkMode } = useContext(DarkModeContext)
       children: [
         {
           path: "/",
-          element: <Home />,
+          element: <Feed />,
         },
         {
           path: "/profile/:id",
           element: <Profile />,
         },
       ],
+    },
+    {
+      path: "/welcome",
+      element: <Welcome />,
     },
     {
       path: "/login",
@@ -79,7 +83,11 @@ const { darkMode } = useContext(DarkModeContext)
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <div>
+      <RouterProvider router={router} />
+    </div>
+  );
 }
 
 export default App;

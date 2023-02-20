@@ -1,8 +1,13 @@
 import express from "express";
-import {  } from "../controllers/post.js"
+import { getUserPosts, getAllPosts, getPost, deletePost, updatePost, createPost } from "../controllers/post.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get("", )
+router.get("/timeline/:userId", getAllPosts);
+router.post("/", createPost);
+router.delete("/:id", deletePost);
+router.put("/:id", updatePost);
+router.get("/:id", getPost);
+router.get("/profile/:username", getUserPosts)
 
-export default router
+export default router;

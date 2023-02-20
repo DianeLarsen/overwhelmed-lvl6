@@ -1,6 +1,6 @@
 @import "../../style.scss";
 
-.leftbar {
+.leftBar {
   @include themify($themes) {
     flex: 2;
     position: sticky;

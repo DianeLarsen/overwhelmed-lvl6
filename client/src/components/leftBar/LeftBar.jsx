@@ -1,4 +1,4 @@
-import "./leftbar.scss";
+import "./leftBar.scss";
 import Friends from "../../assets/1.png";
 import Groups from "../../assets/2.png";
 import Market from "../../assets/3.png";
@@ -20,12 +20,12 @@ const LeftBar = () => {
   const { currentUser } = useContext(AuthContext);
 
   return (
-    <div className="leftbar">
+    <div className="leftBar">
       <div className="container">
         <div className="menu">
           <div className="user">
             <img
-              src={currentUser.profilePic}
+              src={"/upload/" +currentUser.profilePic}
               alt=""
             />
             <span>{currentUser.name}</span>

@@ -1,29 +1,52 @@
-import { db } from "../connect.js"
-import bcrypt from "bcryptjs"
-const register = (req, res) => {
-   
-// Check user if Exists
-const q = "SELECT FROM users WHERE username = ?"
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 
-db.query(q, [req.body.username], (err, data)=>{
-    if (err) return res.status(500).json(err)
-    if(data.length) return res.status(409).json("User already exists!")
-    const salt = bcrypt.genSaltSync(10);
-const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-
-const q = "INSERT INTO users (`username`,`email`,`password`,`name`) VALUE (?)"
-})
-
-
+// Signup
+const register = (req, res, next) => {
+  User.findOne({ username: req.body.username.toLowerCase() }, (err, user) => {
+    if (err) {
+      res.status(500);
+      return next(err);
+    }
+    if (user) {
+      res.status(403);
+      return next(new Error("That username is already taken"));
+    }
+    const newUser = new User(req.body);
+    newUser.save((err, savedUser) => {
+      if (err) {
+        res.status(500);
+        return next(err);
+      }
+      const token = jwt.sign(savedUser.withoutPassword(), process.env.SECRET);
+      return res.status(201).send({ token, user: savedUser.withoutPassword() });
+    });
+  });
 }
+// Login
+const login = (req, res, next) => {
+  User.findOne({ username: req.body.username.toLowerCase() }, (err, user) => {
+    if (err) {
+      res.status(500);
+      return next(err);
+    }
+    if (!user) {
+      res.status(403);
+      return next(new Error("Username or Password are incorrect"));
+    }
 
-const login = (req, res) => {
-
+    user.checkPassword(req.body.password, (err, isMatch) => {
+      if (err) {
+        res.status(403);
+        return next(new Error("Username or Password are incorrect"));
+      }
+      if (!isMatch) {
+        res.status(403);
+        return next(new Error("Username or Password are incorrect"));
+      }
+      const token = jwt.sign(user.withoutPassword(), process.env.SECRET);
+      return res.status(200).send({ token, user: user.withoutPassword() });
+    });
+  });
 }
-
-
-const logout = (req, res) => {
-    
-}
-
-export { login, register, logout }
+export { register, login };
