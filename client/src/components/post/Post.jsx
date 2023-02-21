@@ -9,9 +9,10 @@ import Comments from "../comments/Comments";
 import { useState } from "react";
 import moment from "moment";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
+import  userAxios  from "../../axios";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
+
 
 const Post = ({ post }) => {
   const [commentOpen, setCommentOpen] = useState(false);
@@ -19,8 +20,8 @@ const Post = ({ post }) => {
 
   const { currentUser } = useContext(AuthContext);
 
-  const { isLoading, error, data } = useQuery(["likes", post.id], () =>
-    makeRequest.get("/likes?postId=" + post.id).then((res) => {
+  const { isLoading, data } = useQuery(["likes", post.id], () =>
+  userAxios.get("/likes?postId=" + post.id).then((res) => {
       return res.data;
     })
   );
@@ -29,8 +30,8 @@ const Post = ({ post }) => {
 
   const mutation = useMutation(
     (liked) => {
-      if (liked) return makeRequest.delete("/likes?postId=" + post.id);
-      return makeRequest.post("/likes", { postId: post.id });
+      if (liked) return userAxios.delete("/likes?postId=" + post.id);
+      return userAxios.post("/likes", { postId: post.id });
     },
     {
       onSuccess: () => {
@@ -41,7 +42,7 @@ const Post = ({ post }) => {
   );
   const deleteMutation = useMutation(
     (postId) => {
-      return makeRequest.delete("/posts/" + postId);
+      return userAxios.delete("/posts/" + postId);
     },
     {
       onSuccess: () => {
@@ -64,7 +65,7 @@ const Post = ({ post }) => {
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={"/upload/"+post.profilePic} alt="" />
+            {/* <img src={"/upload/"+post.profilePic} alt="" /> */}
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
@@ -82,7 +83,7 @@ const Post = ({ post }) => {
         </div>
         <div className="content">
           <p>{post.desc}</p>
-          <img src={"/upload/" + post.img} alt="" />
+          {/* <img src={"/upload/" + post.img} alt="" /> */}
         </div>
         <div className="info">
           <div className="item">

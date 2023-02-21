@@ -1,7 +1,5 @@
 import express from "express";
-import path from "path";
 import * as dotenv from "dotenv";
-
 import morgan from "morgan";
 import mongoose from "mongoose";
 import { expressjwt } from "express-jwt";
@@ -12,28 +10,16 @@ import postRoutes from "./routes/posts.js";
 // import likeRoutes from "./routes/likes.js";
 // import relationshipRoutes from "./routes/relationships.js";
 import cors from "cors";
-
-import cookieParser from "cookie-parser";
 const app = express();
+
+app.use(cors());
 dotenv.config();
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-);
-
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
 app.use(morgan("dev"));
 app.set("view engine", "ejs");
-if (process.env.NODE_ENV === "production") {
-  // production mode
-  app.use(express.static("client/build"));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
-}
+
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -47,6 +33,7 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();

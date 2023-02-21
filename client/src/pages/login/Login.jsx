@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import "./login.scss";
+import { CircularProgress } from "@mui/material";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -9,28 +10,36 @@ const Login = () => {
     password: "",
   });
   const [err, setErr] = useState(null);
-
-  const navigate = useNavigate()
+  const [btnStatus, setBtnStatus] = useState(true);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  const { login } = useContext(AuthContext);
+  const { login, userState } = useContext(AuthContext);
+  const { errMsg } = userState
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await login(inputs);
-      navigate("/")
+      navigate("/");
     } catch (err) {
       setErr(err.response.data);
     }
   };
+useEffect(()=>{ if(inputs.username === "" || inputs.password === ""){
+    setBtnStatus(true)
+}else{
+  setBtnStatus(false)
+}}, [inputs])
+ 
+
+
 
   return (
     <div className="login">
       <div className="card">
-       
         <div className="right">
           <h1>Login</h1>
           <form>
@@ -46,13 +55,18 @@ const Login = () => {
               name="password"
               onChange={handleChange}
             />
-            {err && err}
-            <button onClick={handleLogin}>Login</button>
-            <span>Don't have an account?</span>
-            <Link to="/register">
-            <button>Register</button>
-         
-          </Link>
+            <div>
+            {errMsg && <p style={{ color: "red" }}>{errMsg}</p>}
+              <button onClick={handleLogin} disabled={btnStatus}>{btnStatus ? "Enter username and password" : "Login"}</button>
+              <span className="loginForgot">Forgot Password?</span>
+            </div>
+
+            <div className="switch">
+              <span>Already a member?</span>
+              <Link to="/register">
+                <button>Click Here</button>
+              </Link>
+            </div>
           </form>
         </div>
       </div>

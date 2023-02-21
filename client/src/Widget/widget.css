@@ -1,0 +1,17 @@
+.cloudinary-button {
+  background-color: #f1f1f1;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  margin-right: 4px;
+  border: none;
+  outline: none;
+}
+.cloudinary-button:hover {
+  background-color: #f1f1f1;
+  padding: 5px;
+  margin: 0;
+
+  border: none;
+  outline: none;
+}

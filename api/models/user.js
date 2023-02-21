@@ -21,14 +21,11 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    mix: 6,
+    min: 6,
   },
-  firstName: {
+  name: {
     type: String,
     required: true,
-  },
-  lastName: {
-    type: String,
   },
   info: {
     type: String,

@@ -3,49 +3,30 @@ import Register from "./pages/register/Register";
 import {
   createBrowserRouter,
   RouterProvider,
-  Outlet,
-  Navigate,
+    Navigate,
 } from "react-router-dom";
-import Navbar from "./components/navbar/Navbar";
-import LeftBar from "./components/leftBar/LeftBar";
-import RightBar from "./components/rightBar/RightBar";
+
 import Feed from "./pages/feed/Feed";
 import Welcome from "./pages/welcome/Welcome";
 import Profile from "./pages/profile/Profile";
 import "./style.scss";
 import { useContext } from "react";
-import { DarkModeContext } from "./context/darkModeContext";
+
+
+import AppLayout from "./layouts/AppLayout";
+import WelcomeLayout from "./layouts/WelcomeLayout"
+
 import { AuthContext } from "./context/authContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-  const { currentUser } = useContext(AuthContext);
-  console.log(currentUser)
-  const { darkMode } = useContext(DarkModeContext);
+  const { userState: {token} } = useContext(AuthContext);
 
-  const queryClient = new QueryClient();
 
-  const Layout = () => {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <div className={`theme-${darkMode ? "dark" : "light"}`}>
-          <Navbar />
-          <div style={{ display: "flex" }}>
-            <LeftBar />
-            <div style={{ flex: 6 }}>
-              <Outlet />
-            </div>
-            <RightBar />
-          </div>
-        </div>
-      </QueryClientProvider>
-    );
-  };
 
   const ProtectedRoute = ({ children }) => {
-    if (!currentUser) {
-      return <Navigate to="/welcome" />;
-    }
+    if (!token) {
+      return <Navigate to="/login" />;
+    } 
 
     return children;
   };
@@ -55,7 +36,7 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoute>
-          <Layout />
+          <AppLayout />
         </ProtectedRoute>
       ),
       children: [
@@ -69,7 +50,12 @@ function App() {
         },
       ],
     },
-    {
+   { path: "/",
+   element: (
+      <WelcomeLayout />
+    
+   ), 
+   children: [{
       path: "/welcome",
       element: <Welcome />,
     },
@@ -80,7 +66,7 @@ function App() {
     {
       path: "/register",
       element: <Register />,
-    },
+    }],}
   ]);
 
   return (

@@ -12,9 +12,11 @@ import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 
+
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
-  const { currentUser } = useContext(AuthContext);
+  const { userState, logout } = useContext(AuthContext);
+
 
   return (
     <div className="navbar">
@@ -39,12 +41,14 @@ const Navbar = () => {
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
         <div className="user">
-          <img
-            src={"/upload/" + currentUser.profilePic}
+          {/* <img
+            src={"/upload/" + userState.profilePic}
             alt=""
-          />
-          <span>{currentUser.name}</span>
+          /> */}
+          <span>{userState.name}</span>
+
         </div>
+        <button onClick={logout}>logout</button>
       </div>
     </div>
   );

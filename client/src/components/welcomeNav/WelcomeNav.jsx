@@ -1,21 +1,25 @@
 import "./welcomeNav.scss";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 import { Link } from "react-router-dom";
 
-
 const WelcomeNav = () => {
+  const {
+    userState: { token },
+    logout,
+  } = useContext(AuthContext);
 
   return (
-    <div className="navbar">
-      <div className="left">
+    <div className="welcomeNavbar">
         <Link to="/" style={{ textDecoration: "none" }}>
           <span>Overwhelemd</span>
         </Link>
-        <HomeOutlinedIcon />
         
-       
-      </div>
+        {token && 
+          <button onClick={logout}>logout</button>
+         }
+      
     </div>
   );
 };

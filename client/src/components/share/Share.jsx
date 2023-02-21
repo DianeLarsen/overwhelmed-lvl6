@@ -4,57 +4,30 @@ import Map from "../../assets/map.png";
 import Friend from "../../assets/friend.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
+
+
 const Share = () => {
   const [file, setFile] = useState(null);
   const [desc, setDesc] = useState("");
 
-  const upload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await makeRequest.post("/upload", formData);
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  const { currentUser } = useContext(AuthContext);
 
-  const queryClient = useQueryClient();
+  const { userState } = useContext(AuthContext);
 
-  const mutation = useMutation(
-    (newPost) => {
-      return makeRequest.post("/posts", newPost);
-    },
-    {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["posts"]);
-      },
-    }
-  );
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    let imgUrl = "";
-    if (file) imgUrl = await upload();
-    mutation.mutate({ desc, img: imgUrl });
-    setDesc("");
-    setFile(null);
-  };
+
+
+
 
   return (
     <div className="share">
       <div className="container">
         <div className="top">
           <div className="left">
-            <img src={"/upload/" + currentUser.profilePic} alt="" />
+            {/* <img src={"/upload/" + userState.profilePic} alt="" /> */}
             <input
               type="text"
-              placeholder={`What's on your mind ${currentUser.name}?`}
+              placeholder={`What's on your mind ${userState.name}?`}
               onChange={(e) => setDesc(e.target.value)}
               value={desc}
             />
@@ -90,7 +63,7 @@ const Share = () => {
             </div>
           </div>
           <div className="right">
-            <button onClick={handleClick}>Share</button>
+            <button >Share</button>
           </div>
         </div>
       </div>

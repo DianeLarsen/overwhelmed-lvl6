@@ -17,18 +17,18 @@ import { useContext } from "react";
 
 const LeftBar = () => {
 
-  const { currentUser } = useContext(AuthContext);
+  const { userState } = useContext(AuthContext);
 
   return (
     <div className="leftBar">
       <div className="container">
         <div className="menu">
           <div className="user">
-            <img
+            {/* <img
               src={"/upload/" +currentUser.profilePic}
               alt=""
             />
-            <span>{currentUser.name}</span>
+            <span>{currentUser.name}</span> */}
           </div>
           <div className="item">
             <img src={Friends} alt="" />

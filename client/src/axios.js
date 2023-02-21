@@ -1,6 +1,11 @@
-import axios from "axios";
+import axios from "axios"
 
-export const makeRequest = axios.create({
-  baseURL: "http://localhost:9000/api/",
-  withCredentials: true,
+const userAxios = axios.create();
+
+userAxios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
+
+export default userAxios

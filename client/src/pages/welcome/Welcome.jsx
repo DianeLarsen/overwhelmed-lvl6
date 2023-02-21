@@ -9,7 +9,7 @@ const Welcome = () => {
   return (
     <>
     
-    <div className="login">
+    <div className="welcome">
       <div className="card">
         <div className="left">
           <h1>Hello World.</h1>
@@ -18,7 +18,7 @@ const Welcome = () => {
             alias totam numquam ipsa exercitationem dignissimos, error nam,
             consequatur.
           </p>
-          <span>Don't you have an account?</span>
+          
           <Link to="/register">
             <button>Register</button>
          
