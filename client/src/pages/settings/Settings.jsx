@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import Calendar from "../components/Calendar";
-import CloudinaryUploadWidget from "../Widget/CloudinaryUploadWidget";
-import { UserContext } from "../context/UserProvider.js";
-import ProfileForm from "../components/ProfileForm";
-
+import Calendar from "../../components/calendar/Calendar";
+import CloudinaryUploadWidget from "../../Widget/CloudinaryUploadWidget";
+import { AuthContext } from "../../context/authContext.js";
+import ProfileForm from "../../components/ProfileForm";
+import { PermMedia } from "@mui/icons-material";
 
 // need to setNewUser to false after setup complete
 export default function Settings() {
-  const { setNewUser, newUser, updateUser } = useContext(UserContext);
+  const { setNewUser, newUser, updateUser } = useContext(AuthContext);
   const [settingsUpdated, setSettingsUpdated] = useState(false);
   const initialSettings = {
     schedule: "",
@@ -15,6 +15,7 @@ export default function Settings() {
     imgUrl: ""
   }
   const [settings, setSettings] = useState(initialSettings);
+  console.log(settings)
   const [ showCal, setShowCal] = useState(false)
   //  console.log(settings);
   // console.log(newUser)
@@ -48,8 +49,9 @@ function handleUpdate(){
       ) : (
         <div style={{color:"red"}}>Your settings have NOT been updated!</div>
       )}
-        
+       
          <CloudinaryUploadWidget setSettings={setSettings}/>
+         
       <h3>Personal Schedule</h3>
       <button onClick={() => setShowCal(!showCal)}>{showCal ? "Close Calendar" : "Open Calendar"}</button>
       {showCal && <Calendar />}

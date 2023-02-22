@@ -86,7 +86,7 @@ sudo killall mongod
 SECRET= "tomato, toyota, jackrabbit, opener"
 
 git add -A
-git commit -m "starting from scratch"
+git commit -m "working on adding profile pic to db"
 git push
 
 

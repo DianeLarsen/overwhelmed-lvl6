@@ -5,18 +5,18 @@ import {
   RouterProvider,
     Navigate,
 } from "react-router-dom";
-
 import Feed from "./pages/feed/Feed";
 import Welcome from "./pages/welcome/Welcome";
 import Profile from "./pages/profile/Profile";
 import "./style.scss";
 import { useContext } from "react";
-
-
 import AppLayout from "./layouts/AppLayout";
 import WelcomeLayout from "./layouts/WelcomeLayout"
-
 import { AuthContext } from "./context/authContext";
+import Tasks from "./pages/tasks/Tasks";
+import Settings from "./pages/settings/Settings";
+import { DarkModeContext } from "./context/darkModeContext";
+
 
 function App() {
   const { userState: {token} } = useContext(AuthContext);
@@ -45,9 +45,25 @@ function App() {
           element: <Feed />,
         },
         {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
           path: "/profile/:id",
           element: <Profile />,
         },
+        {
+          path: "/settings",
+          element: <Settings />,
+        },
+        {
+          path: "/tasks",
+          element: <Tasks />,
+        },
+        {
+          path: "/feed",
+          element: <Feed />,
+        }
       ],
     },
    { path: "/",
@@ -57,20 +73,20 @@ function App() {
    ), 
    children: [{
       path: "/welcome",
-      element: <Welcome />,
+      element: <Welcome token={token}/>,
     },
     {
       path: "/login",
-      element: <Login />,
+      element: token ? <Navigate to="/tasks" /> : <Login />,
     },
     {
       path: "/register",
-      element: <Register />,
+      element: token ? <Navigate to="/tasks" /> : <Register />,
     }],}
   ]);
-
+  const { darkMode } = useContext(DarkModeContext);
   return (
-    <div>
+    <div className={`theme-${darkMode ? "dark" : "light"}`}>
       <RouterProvider router={router} />
     </div>
   );

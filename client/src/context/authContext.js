@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { redirect } from "react-router-dom";
+import userAxios from "../axios";
 
 export const AuthContext = createContext();
 
@@ -14,9 +14,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const [userState, setUserState] = useState(initState);
- 
-  const initlogstate = localStorage.getItem("loggedIn") || false;
-  const [loggedIn, setLoggedIn] = useState(initlogstate);
+  const [newUser, setNewUser] = useState(userState.user.newUser);
 
   // REGISTER
 
@@ -24,7 +22,9 @@ export const AuthContextProvider = ({ children }) => {
     axios
       .post("/auth/register", inputs)
       .then((res) => {
+        
         const { user, token } = res.data;
+       
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
        
@@ -53,8 +53,9 @@ export const AuthContextProvider = ({ children }) => {
     axios
       .post("/auth/login", inputs)
       .then((res) => {
+    
         const { user, token } = res.data;
-
+       
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
@@ -68,15 +69,10 @@ export const AuthContextProvider = ({ children }) => {
       .catch((err) => handleAuthErr(err.response.data.errMsg));
   }
 
-  useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(userState));
-  }, [userState]);
-
-
-
+// Logout
   
   function logout() {
-    setLoggedIn(false);
+ 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("loggedIn");
@@ -86,9 +82,64 @@ export const AuthContextProvider = ({ children }) => {
       tasks: [],
     });
   }
-console.log(userState.errMsg)
+
+  // ADD TASK
+  function addTask(newTask) {
+    userAxios
+      .post("/api/task", newTask)
+      .then((res) => {
+        setUserState((prevState) => ({
+          ...prevState,
+          tasks: [...prevState.tasks, res.data],
+        }));
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
+
+  // GET USER TASKS
+  function getUserTasks() {
+    userAxios
+      .get("/api/task/user")
+      .then((res) => {
+        setUserState((prevState) => ({
+          ...prevState,
+          tasks: res.data,
+        }));
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
+
+  // gets the tasks of the user on update
+  useEffect(() => {
+    userState.token !== "" && getUserTasks();
+  }, [userState.token]);
+
+// Update User
+function updateUser(update) {
+  console.log(update)
+  userAxios
+    .patch("/api/users", update)
+    .then((res) => console.log(res.data))
+    .catch((err) => console.log(err.response.data.errMsg));
+}
+
+function resetAuthErr() {
+  setUserState((prevState) => ({
+    ...prevState,
+    errMsg: "",
+  }));
+}
+// Handle Post Delete
+function hanldePostDelete(){
+
+}
+// Handle Post Like/Dislike toggle
+function hanldePostLike(){
+
+}
+
   return (
-    <AuthContext.Provider value={{ userState, login, register, logout }}>
+    <AuthContext.Provider value={{ userState, login, register, logout, addTask, setNewUser, newUser, updateUser, hanldePostDelete }}>
       {children}
     </AuthContext.Provider>
   );

@@ -32,18 +32,14 @@ const userSchema = new Schema({
     default: "test",
     max: 50,
   },
-  imgUrl: {
-    type: String,
-    default:
-      "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true",
-  },
   coverPicture: {
     type: String,
     default: "",
   },
   profilePicture: {
     type: String,
-    default: "",
+    default:
+      "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true",
   },
   friends: {
     type: Array,

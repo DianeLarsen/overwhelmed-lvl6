@@ -1,11 +1,12 @@
-import Stories from "../../components/stories/Stories"
-import Posts from "../../components/posts/Posts"
-import Share from "../../components/share/Share"
+// import Stories from "../../components/stories/Stories"
+// import Posts from "../../components/posts/Posts"
+// import Share from "../../components/share/Share"
 import "./feed.scss"
 
-const Home = () => {
+export default function Feed () {
   return (
-    <div className="home">
+    <div className="feed">
+      <h1>FEED</h1>
       {/* <Stories/> */}
       {/* <Share/>
       <Posts/> */}
@@ -13,4 +14,3 @@ const Home = () => {
   )
 }
 
-export default Home

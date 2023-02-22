@@ -3,6 +3,7 @@ import User from "../models/user.js";
 
 // update a user
 const updateUser = (req, res, next) => {
+  
   id = req.auth._id
   User.findOneAndUpdate(
     id,

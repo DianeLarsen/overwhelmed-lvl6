@@ -1,9 +1,10 @@
-import React from "react";
-import { PermMedia } from "@mui/icons-material";
-import "./widget.css";
+import { useState } from "react";
 
-export default function CloudinaryUploadWidget(props) {
-  const { setSettings } = props;
+import "../Widget/widget.css";
+import { createContext } from "react";
+export const PicContext = createContext();
+export function PicContextProvider({children}) {
+const [imgURL, setImgURL] = useState("")
   const cloudName = "dqjh46sk5";
   const uploadPreset = "cbutm4im";
 
@@ -26,18 +27,14 @@ export default function CloudinaryUploadWidget(props) {
     (error, result) => {
       if (!error && result && result.event === "success") {
         console.log("Done! Here is the image info: ", result.info.url);
-        setSettings(prev => ({...prev, imgUrl: result.info.url}));
+        setImgURL(result.info.url);
       }
     }
   );
 
-  return (
-    <button
-      id="upload_widget"
-      onClick={() => myWidget.open()}
-      className="cloudinary-button"
-    >
-      <PermMedia htmlColor="tomato" className="shareIcon" />
-    </button>
-  );
+  return(
+    <PicContext.Provider value={{ myWidget, imgURL, setImgURL }}>
+    {children}
+  </PicContext.Provider>
+  )
 }

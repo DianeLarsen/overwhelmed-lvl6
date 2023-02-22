@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import "./welcome.scss";
 
-const Welcome = () => {
+export default function Welcome(props){
 
-
+const { token } = props
  
 
   return (
-    <>
+    
     
     <div className="welcome">
       <div className="card">
@@ -19,19 +19,19 @@ const Welcome = () => {
             consequatur.
           </p>
           
-          <Link to="/register">
+         {!token && <> <Link to="/register">
             <button>Register</button>
          
           </Link>
           <Link to="/login">
             <button>Login</button>
          
-          </Link>
+          </Link></>}
         </div>
       </div>
     </div>
-    </>
+    
   );
 };
 
-export default Welcome;
+

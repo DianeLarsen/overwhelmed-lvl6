@@ -4,7 +4,7 @@ export const UserContext = React.createContext();
 
 
 
-export function UserProvider(props) {
+export function UserProviders(props) {
   const initState = {
     user: JSON.parse(localStorage.getItem("user")) || {},
     token: localStorage.getItem("token") || "",
@@ -46,55 +46,9 @@ export function UserProvider(props) {
     }));
   }
 
-  function getUserTasks() {
-    userAxios
-      .get("/api/task/user")
-      .then((res) => {
-        setUserState((prevState) => ({
-          ...prevState,
-          tasks: res.data,
-        }));
-      })
-      .catch((err) => console.log(err.response.data.errMsg));
-  }
 
-  function addTask(newTask) {
-    userAxios
-      .post("/api/task", newTask)
-      .then((res) => {
-        setUserState((prevState) => ({
-          ...prevState,
-          tasks: [...prevState.tasks, res.data],
-        }));
-      })
-      .catch((err) => console.log(err.response.data.errMsg));
-  }
-  function updateUser(update) {
-    console.log(update)
-    userAxios
-      .patch("/api/user/user", update)
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err.response.data.errMsg));
-  }
 
-  return (
-    <UserContext.Provider
-      value={{
-        ...userState,
-        
-       
-       
-        addTask,
-        resetAuthErr,
-        loggedIn,
-        openLogin,
-        loginWindow,
-        newUser,
-        setNewUser,
-        updateUser,
-      }}
-    >
-      {props.children}
-    </UserContext.Provider>
-  );
+
+
+
 }
