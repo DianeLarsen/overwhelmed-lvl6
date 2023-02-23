@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema;
 import bcrypt from "bcryptjs";
+import eventSchema from "./events.js"
 
 const userSchema = new Schema({
   username: {
@@ -73,10 +74,15 @@ const userSchema = new Schema({
     type: Boolean,
     default: true,
   },
-  settings: {
+  layout: {
     type: Array,
     default: [],
   },
+  schedule: {
+    type: Schema.Types.ObjectId,
+    ref: 'events',
+  },
+ 
   relationship: {
     type: Number,
     enum: [1, 2, 3],

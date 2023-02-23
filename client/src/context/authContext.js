@@ -1,11 +1,10 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import userAxios from "../axios";
 
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-
   const initState = {
     user: JSON.parse(localStorage.getItem("user")) || {},
     token: localStorage.getItem("token") || "",
@@ -22,18 +21,16 @@ export const AuthContextProvider = ({ children }) => {
     axios
       .post("/auth/register", inputs)
       .then((res) => {
-        
         const { user, token } = res.data;
-       
+
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
-       
+
         setUserState((prevUserState) => ({
           ...prevUserState,
           user,
           token,
         }));
-        
       })
       .catch((err) => handleAuthErr(err.response.data.errMsg));
   }
@@ -53,9 +50,8 @@ export const AuthContextProvider = ({ children }) => {
     axios
       .post("/auth/login", inputs)
       .then((res) => {
-    
         const { user, token } = res.data;
-       
+
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
@@ -69,10 +65,9 @@ export const AuthContextProvider = ({ children }) => {
       .catch((err) => handleAuthErr(err.response.data.errMsg));
   }
 
-// Logout
-  
+  // Logout
+
   function logout() {
- 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("loggedIn");
@@ -109,37 +104,48 @@ export const AuthContextProvider = ({ children }) => {
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  // gets the tasks of the user on update
-  useEffect(() => {
-    userState.token !== "" && getUserTasks();
-  }, [userState.token]);
+  // Update User
+  function updateUser(update) {
+    userAxios
+      .patch("/api/users", update)
+      .then((res) => {
+        const user = res.data;
 
-// Update User
-function updateUser(update) {
-  console.log(update)
-  userAxios
-    .patch("/api/users", update)
-    .then((res) => console.log(res.data))
-    .catch((err) => console.log(err.response.data.errMsg));
-}
+        localStorage.setItem("user", JSON.stringify(user));
 
-function resetAuthErr() {
-  setUserState((prevState) => ({
-    ...prevState,
-    errMsg: "",
-  }));
-}
-// Handle Post Delete
-function hanldePostDelete(){
+        setUserState((prevUserState) => ({
+          ...prevUserState,
+          user,
+        }));
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
 
-}
-// Handle Post Like/Dislike toggle
-function hanldePostLike(){
-
-}
+  function resetAuthErr() {
+    setUserState((prevState) => ({
+      ...prevState,
+      errMsg: "",
+    }));
+  }
+  // Handle Post Delete
+  function hanldePostDelete() {}
+  // Handle Post Like/Dislike toggle
+  function hanldePostLike() {}
 
   return (
-    <AuthContext.Provider value={{ userState, login, register, logout, addTask, setNewUser, newUser, updateUser, hanldePostDelete }}>
+    <AuthContext.Provider
+      value={{
+        userState,
+        login,
+        register,
+        logout,
+        addTask,
+        setNewUser,
+        newUser,
+        updateUser,
+        hanldePostDelete,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

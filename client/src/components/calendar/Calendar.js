@@ -37,14 +37,30 @@ class Calendar extends Component {
       },
       eventDeleteHandling: "Update",
       onEventClick: async args => {
+        
         const dp = this.calendar;
-        const modal = await DayPilot.Modal.prompt("Update event text:", args.e.text());
-        if (!modal.result) { return; }
-        const e = args.e;
-        e.data.text = modal.result;
-        dp.events.update(e);
+        const colors = [
+          {name: "Blue", id: "#3c78d8"},
+          {name: "Green", id: "#6aa84f"},
+          {name: "Yellow", id: "#f1c232"},
+          {name: "Red", id: "#cc0000"},
+      ];
+
+      const form = [
+          {name: "Text", id: "text"},
+          {name: "Start", id: "start", type: "datetime"},
+          {name: "End", id: "end", type: "datetime"},
+          {name: "Color", id: "backColor", type: "select", options: colors},
+      ];
+        const modal = await DayPilot.Modal.form(form, args.e.data);
+        if (modal.canceled) {
+          return;
+      }
+       console.log(modal.result)
+        dp.events.update(modal.result);
       },
     };
+    props.setEvents("")
   }
 
   get calendar() {

@@ -96,7 +96,7 @@ for icons
     npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
 dependency for MUI
     npm install @fontsource/roboto
-
+npm i --save react-select
 
     move   
         "@emotion/react": "^11.10.5"
@@ -112,5 +112,6 @@ npm prune to remove unneeded node modules, or delete node modules and reinstall
 
 npm install -g depcheck
 then just type
-depcheck .
+
+
 in the folder being checked

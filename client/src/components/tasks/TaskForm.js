@@ -9,6 +9,7 @@ const initInputs = {
 export default function TaskForm(props){
   const [inputs, setInputs] = useState(initInputs)
 const { addTask } = props
+
   function handleChange(e){
     const {name, value} = e.target
     setInputs(prevInputs => ({
