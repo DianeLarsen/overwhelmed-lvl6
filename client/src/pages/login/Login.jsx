@@ -62,7 +62,7 @@ useEffect(()=>{ if(inputs.username === "" || inputs.password === ""){
             </div>
 
             <div className="switch">
-              <span>Already a member?</span>
+              <span>Not a member?</span>
               <Link to="/register">
                 <button>Click Here</button>
               </Link>

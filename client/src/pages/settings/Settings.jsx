@@ -4,12 +4,14 @@ import Calendar from "../../components/calendar/Calendar";
 import CloudinaryUploadWidget from "../../Widget/CloudinaryUploadWidget";
 import { AuthContext } from "../../context/authContext.js";
 import ProfileForm from "../../components/ProfileForm";
-import { PermMedia } from "@mui/icons-material";
+
+
+
 
 
 // need to setNewUser to false after setup complete
 export default function Settings() {
-  const { setNewUser, newUser, updateUser, userState } = useContext(AuthContext);
+  const { setNewUser, newUser, updateUser, userState, addEvent, events, setNewEvents, newEvents, setUpdateEvents, updateEvents, updateEvent } = useContext(AuthContext);
   const {user: {name}} = userState
 
  
@@ -19,16 +21,19 @@ export default function Settings() {
     layout: "",
     imgUrl: "",
   };
+  const [ saved, setSaved] = useState(false)
   const [settings, setSettings] = useState(initialSettings);
   // console.log(settings);
-  const [showCal, setShowCal] = useState(false);
-  const initialEvents = {
-    text: "",
-    start: "",
-    end: "",
-    backColor: ""
-  };
-const  [events, setEvents] = useState(initialEvents);
+  const [showCal, setShowCal] = useState(localStorage.getItem("showCal")||false);
+  // const initialEvents = {
+  //   text: "",
+  //   start: "",
+  //   end: "",
+  //   backColor: ""
+  // };
+
+
+
 
   // need to come up with a different condition that encompases all the data instead of jist misc
   useEffect(() => {
@@ -51,7 +56,22 @@ const  [events, setEvents] = useState(initialEvents);
     setSettingsUpdated(!settingsUpdated);
     setNewUser(false);
     updateUser(settings);
+    
   }
+function handleEventUpdate(e){
+  e.preventDefault()
+  if (newEvents.text !== ""){
+  addEvent(newEvents)
+  }
+  if (updateEvents !== ""){
+    updateEvent(updateEvents)
+  }
+  setSaved(true)
+}
+
+useEffect(()=>{
+  localStorage.setItem("showCal", showCal);
+}, [showCal])
 
   return (
     <div className="setup">
@@ -65,10 +85,11 @@ const  [events, setEvents] = useState(initialEvents);
       <CloudinaryUploadWidget setSettings={setSettings} />
 
       <h3>Personal Schedule</h3>
-      <button onClick={() => setShowCal(!showCal)}>
-        {showCal ? "Close Calendar" : "Open Calendar"}
+      <button onClick={()=> setShowCal(!showCal)}>
+        {showCal ? "Cancel" : "Open Calendar"}
       </button>
-      {showCal && <Calendar setEvents={setEvents}/>}
+      {showCal && <button onClick={handleEventUpdate}>Save Calendar</button>}
+      {showCal && <Calendar setNewEvents={setNewEvents} setUpdateEvents={setUpdateEvents} events={events}/>}
 
       <h3>Misc</h3>
       <input
@@ -93,6 +114,8 @@ const  [events, setEvents] = useState(initialEvents);
       <a href="/profile">
         <button>Skip</button>
       </a>
+
+  
     </div>
   );
 }

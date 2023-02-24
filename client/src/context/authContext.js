@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import userAxios from "../axios";
 
 export const AuthContext = createContext();
@@ -10,11 +10,50 @@ export const AuthContextProvider = ({ children }) => {
     token: localStorage.getItem("token") || "",
     tasks: [],
     errMsg: "",
+    events: []
   };
 
   const [userState, setUserState] = useState(initState);
   const [newUser, setNewUser] = useState(userState.user.newUser);
+  const initialEvents = {
+    text: "",
+    start: "",
+    end: "",
+    id: "", 
+    backColor: ""
+  };
+  const [newEvents, setNewEvents] = useState(initialEvents); 
+ 
+  const [updateEvents, setUpdateEvents] = useState("");
 
+  
+  const  [events, setEvents] = useState([{
+    id: 1,
+    text: "Event 1",
+    start: "2023-03-07T10:30:00",
+    end: "2023-03-07T13:00:00"
+  },
+  {
+    id: 2,
+    text: "Event 2",
+    start: "2023-03-08T09:30:00",
+    end: "2023-03-08T11:30:00",
+    backColor: "#6aa84f"
+  },
+  {
+    id: 3,
+    text: "Event 3",
+    start: "2023-03-08T12:00:00",
+    end: "2023-03-08T15:00:00",
+    backColor: "#f1c232"
+  },
+  {
+    id: 4,
+    text: "Event 4",
+    start: "2023-03-06T11:30:00",
+    end: "2023-03-06T14:30:00",
+    backColor: "#cc4125"
+  }]);
   // REGISTER
 
   function register(inputs) {
@@ -74,9 +113,52 @@ export const AuthContextProvider = ({ children }) => {
     setUserState({
       user: {},
       token: "",
-      tasks: [],
+      tasks: []
+      
     });
   }
+  // ADD Event
+  function addEvent(newEvent) {
+    console.log(newEvent)
+    userAxios
+      .post("/api/event", newEvent)
+      .then((res) => {
+        console.log("The event has been added!");
+        getUserEvents()
+        setNewEvents(initialEvents)
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+
+  }
+
+   // Update Event
+   function updateEvent(updatedEvent) {
+    console.log(updatedEvent)
+updatedEvent.map((updates)=>
+    userAxios
+      .patch(`/api/event/${updates._id}`, updates)
+      .then((res) => {
+        console.log("The event has been updated!");
+        getUserEvents()
+        setUpdateEvents("")
+      })
+      .catch((err) => console.log(err.response.data.errMsg)))
+  }
+
+  // GET USER Events
+  function getUserEvents() {
+    userAxios
+      .get("/api/event/")
+      .then((res) => {
+        setEvents(res.data);
+      })
+      .catch((err) => console.log(err.response.data.errMsg));
+  }
+
+  useEffect(()=>{
+    getUserEvents()
+  },[])
+
 
   // ADD TASK
   function addTask(newTask) {
@@ -144,6 +226,14 @@ export const AuthContextProvider = ({ children }) => {
         newUser,
         updateUser,
         hanldePostDelete,
+        addEvent,
+        events,
+        setEvents,
+        setNewEvents,
+        newEvents,
+        setUpdateEvents,
+        updateEvents, 
+        updateEvent
       }}
     >
       {children}
