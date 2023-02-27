@@ -6,7 +6,7 @@ export default function Task(props){
     <div className="task">
         <h1>{ title }</h1>
         <h3>{ description }</h3>
-        <img src={ imgUrl } alt="" width={300}/>
+        {imgUrl &&<img src={imgUrl} alt="" width={300}/>}
     </div>
   )
 }

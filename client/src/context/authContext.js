@@ -1,6 +1,9 @@
 import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 import userAxios from "../axios";
+import {
+  DayPilot,
+} from "@daypilot/daypilot-lite-react";
 
 export const AuthContext = createContext();
 
@@ -10,49 +13,21 @@ export const AuthContextProvider = ({ children }) => {
     token: localStorage.getItem("token") || "",
     tasks: [],
     errMsg: "",
-    events: []
   };
 
   const [userState, setUserState] = useState(initState);
   const [newUser, setNewUser] = useState(userState.user.newUser);
-  const initialEvents = {
-    text: "",
-    start: "",
-    end: "",
-    id: "", 
-    backColor: ""
-  };
-  const [newEvents, setNewEvents] = useState(initialEvents); 
- 
-  const [updateEvents, setUpdateEvents] = useState("");
-
   
-  const  [events, setEvents] = useState([{
-    id: 1,
-    text: "Event 1",
-    start: "2023-03-07T10:30:00",
-    end: "2023-03-07T13:00:00"
-  },
-  {
-    id: 2,
-    text: "Event 2",
-    start: "2023-03-08T09:30:00",
-    end: "2023-03-08T11:30:00",
-    backColor: "#6aa84f"
-  },
-  {
-    id: 3,
-    text: "Event 3",
-    start: "2023-03-08T12:00:00",
-    end: "2023-03-08T15:00:00",
-    backColor: "#f1c232"
-  },
-  {
-    id: 4,
-    text: "Event 4",
-    start: "2023-03-06T11:30:00",
-    end: "2023-03-06T14:30:00",
-    backColor: "#cc4125"
+  const [newEvents, setNewEvents] = useState("");
+  const [settings, setSettings] = useState("");
+  const [updateEvents, setUpdateEvents] = useState("");
+ 
+  const [events, setEvents] = useState([{
+    start: new DayPilot.Date(),
+    end: (new DayPilot.Date()).addHours(5),
+    id: DayPilot.guid(),
+    text: "New Event",
+    resource: "E"
   }]);
   // REGISTER
 
@@ -113,37 +88,51 @@ export const AuthContextProvider = ({ children }) => {
     setUserState({
       user: {},
       token: "",
-      tasks: []
-      
+      tasks: "",
     });
   }
   // ADD Event
   function addEvent(newEvent) {
-    console.log(newEvent)
+ 
+    newEvent.map((newEvent) =>
     userAxios
       .post("/api/event", newEvent)
       .then((res) => {
         console.log("The event has been added!");
-        getUserEvents()
-        setNewEvents(initialEvents)
+        getUserEvents();
+        setNewEvents("");
       })
-      .catch((err) => console.log(err.response.data.errMsg));
-
+      .catch((err) => console.log(err.response.data.errMsg))
+    )
   }
 
-   // Update Event
-   function updateEvent(updatedEvent) {
-    console.log(updatedEvent)
-updatedEvent.map((updates)=>
-    userAxios
-      .patch(`/api/event/${updates._id}`, updates)
-      .then((res) => {
-        console.log("The event has been updated!");
-        getUserEvents()
-        setUpdateEvents("")
-      })
-      .catch((err) => console.log(err.response.data.errMsg)))
+  // Update Event
+  function updateEvent(updatedEvent) {
+    console.log(updatedEvent);
+    updatedEvent.map((updates) =>
+      userAxios
+        .patch(`/api/event/${updates._id}`, updates)
+        .then((res) => {
+          console.log("The event has been updated!");
+          getUserEvents();
+          setUpdateEvents("");
+        })
+        .catch((err) => console.log(err.response.data.errMsg))
+    );
   }
+    // Update Task
+    function updateTask(updatedTask) {
+      console.log(updatedTask);
+      
+        userAxios
+          .patch(`/api/task/${updatedTask._id}`, updatedTask)
+          .then((res) => {
+            console.log("The task has been updated!");
+            getUserTasks();
+          })
+          .catch((err) => console.log(err.response.data.errMsg))
+      
+    }
 
   // GET USER Events
   function getUserEvents() {
@@ -155,24 +144,22 @@ updatedEvent.map((updates)=>
       .catch((err) => console.log(err.response.data.errMsg));
   }
 
-  useEffect(()=>{
-    getUserEvents()
-  },[])
-
+  useEffect(() => {
+    getUserEvents();
+    getUserTasks()
+  }, []);
 
   // ADD TASK
   function addTask(newTask) {
     userAxios
       .post("/api/task", newTask)
       .then((res) => {
-        setUserState((prevState) => ({
-          ...prevState,
-          tasks: [...prevState.tasks, res.data],
-        }));
+        getUserTasks()
+        
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
-
+console.log(userState)
   // GET USER TASKS
   function getUserTasks() {
     userAxios
@@ -214,6 +201,24 @@ updatedEvent.map((updates)=>
   // Handle Post Like/Dislike toggle
   function hanldePostLike() {}
 
+  // DELETE EVENT
+  function handleEventDelete(eventID) {
+    userAxios
+      .delete(`/api/event/${eventID}`)
+      .then((res) => {
+        setEvents((prevEvents) =>
+          prevEvents.filter((event) => event._id !== eventID)
+        );
+      })
+      .catch((err) => console.log(err));
+  }
+  function confirmLeave(){
+    if (!window.confirm("You have unsaved settings, do you want to leave the page?/n If OK leave the page and settings will not be saved /n if Cancel return to page") ) {
+      
+    }}
+
+ 
+
   return (
     <AuthContext.Provider
       value={{
@@ -232,8 +237,14 @@ updatedEvent.map((updates)=>
         setNewEvents,
         newEvents,
         setUpdateEvents,
-        updateEvents, 
-        updateEvent
+        updateEvents,
+        updateEvent,
+        handleEventDelete,
+        settings, 
+        setSettings,
+        confirmLeave,
+        updateTask,
+       
       }}
     >
       {children}

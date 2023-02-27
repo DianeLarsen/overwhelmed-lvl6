@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./ProfileImage.css";
+import "./ProfileImage.scss";
 import { AuthContext } from "../context/authContext";
 import { PicContext } from "../context/picUploadContext";
 
@@ -8,90 +8,121 @@ export default function ProfileCard() {
   const { myWidget, imgURL, setImgURL } = useContext(PicContext);
   const { user } = userState;
 
-  const { name, profilePicture } = user;
-
+  const { name, profilePicture, goal, status, tasks } = user;
   const initalCard = {
-    imagePreviewUrl: profilePicture, 
-    status: "",
-    active: true,
+    goal: goal || "",
+    status: status || "",
   };
+
   const [inputs, setInputs] = useState(initalCard);
-  const [card, setCard] = useState(initalCard);
+
   const [active, setActive] = useState(false);
 
-  const [btnText, setBtnText] = useState("fa-pen");
 
   function handleChange(e) {
-    const { value } = e.target;
+    const { name, value } = e.target;
     setInputs((prevInputs) => ({
       ...prevInputs,
-      status: value,
+      [name]: value,
     }));
   }
+ 
+
   function handleSubmit(e) {
     e.preventDefault();
-    setCard(inputs);
-  }
-  useEffect(() => {
-    if (active === true) {
-      setBtnText("fa-check");
-    } else {
-      setBtnText("fa-pen");
-    }
-  }, [active]);
+    updateUser(inputs);
+    setActive(!active)
+   }
+ 
 
-  function toggleActive() {
-    if (btnText === "fa-check") {
-      setActive((prev) => !prev);
+  function handlePictureUpload() {
+    updateUser({ profilePicture: imgURL });
+    setImgURL("");
+  }
+function notSaved(e){
+  if (active){
+    if(!window.confirm("You are currently editing, Are you done (OK) or would you like to keep editing  (Cancel)?")){
+      e.preventDefault()
+
     } else {
-      setActive((prev) => !prev);
+      handleSubmit(e)
     }
   }
+}
 
-  function handlePictureUpload(){
-    updateUser({profilePicture: imgURL})
-    setImgURL("")
-  }
   return (
-    <div className="body">
-      <div className="card">
-        <form onSubmit={handleSubmit}>
-          <label className="custom-file-upload fas">
-            <div className="img-wrap" onClick={() => myWidget.open()} title="Click to change Profile Picture">
-              
-              <img alt="" src={card.imagePreviewUrl} />
-            </div>
-            {imgURL && <button onClick={handlePictureUpload}>Click to Confirm</button>}
-          </label>
-          <div className="name">{name}</div>
-          <br />
-          {!active ? (
-            <div className="status">
-              {card.status || "It's a beautiful Day"}
-            </div>
-          ) : (
+    <div className="body" >
+      <div className="card" onBlur={notSaved}>
+        <label className="custom-file-upload fas">
+          <div
+            className="img-wrap"
+            onClick={() => myWidget.open()}
+            title="Click to change Profile Picture"
+          >
+            <img alt="" src={profilePicture} />
+          </div>
+          {imgURL && (
+            <button onClick={handlePictureUpload}>Click to Confirm</button>
+          )}
+        </label>
+        <div className="name">{name}</div>
+        <br />
+        
+        {!active ? (
+          <div className="status">
+            <div className="goal">Goal: {goal}</div>
+            {status || "It's a beautiful day!"}
+          </div>
+        ) : (
+          <>
             <div className="field">
+              <label htmlFor="goal">goal:</label>
+              <textarea
+              id="goal"
+                className="goal"
+                value={inputs.goal}
+                name="goal"
+                onChange={handleChange}
+              />
               <label htmlFor="status">status:</label>
               <input
                 id="status"
+                name="status"
                 type="text"
                 onChange={handleChange}
                 maxLength="35"
                 value={inputs.status}
-                placeholder="It's a nice day!"
+                placeholder="It's a beautiful day!"
                 required
               />
             </div>
-          )}
-          <br />
-          <div className="name">
-            Tasks completed: (placeholder for task number)
-          </div>
-
-          <button type="submit" className="profileBtn" onClick={toggleActive}>
-            <i className={`fa-solid ${btnText}`}></i>
+           
+            </>
+        )}
+        {active && <button
+        title="Submit"
+            type="submit"
+              className="profileBtn"
+              onClick={handleSubmit}
+            >
+              <i className={`fa-solid fa-check`}></i>
+            </button>}
+        
+        <br />
+        
+        {!active && (
+          <button
+            type="button"
+            className="profileBtn"
+            title="Edit"
+            onClick={() => setActive(!active)}
+          >
+            <i className={`fa-solid fa-pen`}></i>
           </button>
-        </form>
+        )}
+        <div className="name">
+          Tasks completed: {tasks ? tasks.length : 0}
+        </div>
       </div>
     </div>
   );

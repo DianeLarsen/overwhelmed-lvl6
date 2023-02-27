@@ -8,7 +8,7 @@
     background-repeat: no-repeat, no-repeat;
     background-position:  200% -40%;
     background-size: 80%;
-  }
+  
   
   .card{
     width: 30%;
@@ -27,7 +27,7 @@
     background-size: 30%, 70%;
     animation: open .5s;
     margin-bottom: 40px;
-  }
+ 
   .card button{
     align-self: center;
   }
@@ -63,7 +63,7 @@
   
   .img-wrap{
     position: relative;
-    width: 200px;
+    width: 100%;
     height: 200px;
     overflow: hidden;
     border-radius: 50%;
@@ -193,4 +193,5 @@
     transition: all .1s linear;
     cursor: pointer;
   }
-  
+}
+}

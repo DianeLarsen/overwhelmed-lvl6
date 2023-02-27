@@ -10,7 +10,7 @@ export default function Tasks() {
   const { userState, addTask } = useContext(AuthContext);
 
   const { user, tasks } = userState;
-
+console.log(tasks)
   const { name } = user;
 
 
@@ -21,14 +21,14 @@ export default function Tasks() {
   return (
     <div className="profile">
       <ProfileCard />
-
-      <p>placeholder for goal</p>
+<div className="tasksArea">
       <a href="/settings">Edit Profile</a>
       <h1>Welcome {capitalizeFirstLetter(name)}!</h1>
       <h3>Add A Task</h3>
       <TaskForm addTask={addTask} />
       <h3>Your Tasks</h3>
       <TaskList tasks={tasks} />
+      </div>
     </div>
   );
 }

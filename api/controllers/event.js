@@ -32,20 +32,20 @@ const updateEvent =  async (req, res, next) => {
 };
 // delete an event
 
-const deleteEvent = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (event.user === req.body.userId) {
-      await event.deleteOne();
-      res.status(200).json("the event has been deleted");
-    } else {
-      res.status(403).json("you can delete only your event");
+const deleteEvent = (req, res, next) => {
+  Event.findOneAndDelete(
+    { _id: req.params.eventId, user: req.auth._id },
+    (err, deletedEvent) => {
+      if (err) {
+        res.status(500);
+        return next(err);
+      }
+      return res
+        .status(200)
+        .send(`Successfully delete task: ${deletedEvent}`);
     }
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  );
 };
-
 // get an event
 
 const getEvent =  async (req, res) => {

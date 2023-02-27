@@ -82,7 +82,13 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'events',
   },
- 
+  tasks: {
+    type: Schema.Types.ObjectId,
+    ref: 'tasks',
+  },
+ goal: {
+  type: String,
+ },
   relationship: {
     type: Number,
     enum: [1, 2, 3],
@@ -94,7 +100,11 @@ const userSchema = new Schema({
   from: {
     type: String,
     max: 50,
-  }
+  },
+  status: {
+    type: String,
+    max: 50,
+  },
 });
 // pre-save hook to encrypt user passwords on signup
 

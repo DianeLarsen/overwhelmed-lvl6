@@ -1,55 +1,51 @@
 import React, { useState, useContext } from "react";
 import CreatableSelect from "react-select/creatable";
-import layoutData from "../components/layoutData";
+import layoutData from "./layoutData";
 import makeAnimated from "react-select/animated";
 import { AuthContext } from "../context/authContext.js";
 const animatedComponents = makeAnimated();
 
-export default function ProfileForm(props) {
+export default function ProfileForm() {
   const { updateUser, userState } = useContext(AuthContext);
   const { user } = userState
-  const { setSettings, settings } = props;
-  const [goal, setGoal] = useState("");
+  
+
   const [counter, setCounter] = useState(0);
-  const [layout, setLayout] = useState([]);
+  const [layout, setLayout] = useState("");
   const [layoutDisplay, setLayoutDisplay] = useState(true);
 
-  function handleGoalChange(e) {
-    const { name, value } = e.target;
-    setGoal((prevInputs) => ({
-      ...prevInputs,
-      [name]: value,
-    }));
-  }
-  function handleGoalSubmit(e) {
-    e.preventDefault();
-    setSettings((prevInputs) => ({
-      ...prevInputs,
-      goal: goal,
-    }));
-  }
+
+  // console.log(settings)
   function handleLayoutSubmit(e) {
     e.preventDefault();
     const layoutUpdate = { layout: layout };
     updateUser(layoutUpdate);
     toggleLayout()
-    // setSettings((prevInputs) => ({
-    //   ...prevInputs,
-    //   layout
-    // }))
-  }
+ }
 function toggleLayout(){
   setLayoutDisplay(prev => !prev)
 }
+function notSaved(e){
+  if (!layoutDisplay && layout !== ""){
+    if(!window.confirm("You are currently editing, Are you done (OK) or would you like to keep editing (Cancel)?")){
+      e.preventDefault()
 
+    } else {
+      handleLayoutSubmit(e)
+    }
+  } else {
+    toggleLayout()
+  }
+}
   function handleLayoutChange(e) {
     const layoutInputs = e.map((prev) => ({ ...prev }));
-    console.log(layoutInputs);
+    // console.log(layoutInputs);
     setLayout(layoutInputs);
   }
-  
+  console.log(!layoutDisplay && layout !== "")
   return (
     <div className="public">
+      <form className="layout" onBlur={notSaved}>
       {layoutDisplay ? (
         <ul>
           {user.layout &&
@@ -57,7 +53,7 @@ function toggleLayout(){
             <button onClick={toggleLayout}>Edit Layout</button>
         </ul>
       ) : (
-        <form className="layout">
+        <>
           <CreatableSelect
             options={layoutData}
             closeMenuOnSelect={false}
@@ -70,18 +66,11 @@ function toggleLayout(){
           <button onClick={handleLayoutSubmit} type="submit">
             Update Layout
           </button>
-        </form>
+          <button onClick={notSaved}>Cancel</button>
+          </>
       )}
-      <h3>Goal</h3>
-      <form className="calendar" onSubmit={handleGoalSubmit}>
-        <textarea
-          className="goal"
-          value={goal}
-          name="goal"
-          onChange={handleGoalChange}
-        />
-        <button>Update Goal</button>
-      </form>
+     
+     </form>
     </div>
   );
 }

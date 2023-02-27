@@ -25,20 +25,40 @@ class Calendar extends Component {
     this.calendarRef = React.createRef();
     this.state = {
       viewType: "Week",
-      durationBarVisible: false,
+      durationBarVisible: true,
       timeRangeSelectedHandling: "Enabled",
       onEventMoved: (args) => {
-        
         console.log(args.e.data);
-        this.props.setUpdateEvents(prev => ([...prev,{
-          _id: args.e.data._id,
-          
-          start: args.e.data.start,
-          end: args.e.data.end
-        }]))
+        this.props.setUpdateEvents((prev) => [
+          ...prev,
+          {
+            _id: args.e.data._id,
+
+            start: args.e.data.start,
+            end: args.e.data.end,
+          },
+        ]);
+      },
+      eventResizeHandling: "Update", 
+      onEventResize: (args)=> {
+        // args.preventDefault();
+        // const dp = this.calendar;
+        // console.log(args.e.data)
+        const { _id,backColor, text} = args.e.data
+        
+        console.log(args.newStart.value)
+        console.log(args.newEnd.value)
+        this.props.setUpdateEvents((prev) => [
+          ...prev,
+          {
+            _id: _id,
+            start: args.newStart.value,
+            end: args.newEnd.value,
+          },
+        ]);
+        
       },
       onTimeRangeSelected: async (args) => {
-        
         const dp = this.calendar;
         const modal = await DayPilot.Modal.prompt(
           "Create a new event:",
@@ -48,28 +68,38 @@ class Calendar extends Component {
         if (!modal.result) {
           return;
         }
-   
 
-        const start = args.start.value
-        console.log(start)
-        const end = args.end.value
-          this.props.setNewEvents(        
-            
-              {id: DayPilot.guid(),
-              text: modal.result,
-              start: start,
-              end: end,}
-             );
-             dp.events.add({
-              start: args.start,
-              end: args.end,
-              id: DayPilot.guid(),
-              text: modal.result
-            });
-          
-    //  console.log(args.start.value)          
+        const start = args.start.value;
+        console.log(start);
+        const end = args.end.value;
+
+        this.props.setNewEvents(prev=>([...prev, 
+          {id: DayPilot.guid(),
+          text: modal.result,
+          start: start,
+          end: end,
+        }]));
+        dp.events.add({
+          start: args.start,
+          end: args.end,
+          id: DayPilot.guid(),
+          text: modal.result,
+        });
+
+        //  console.log(args.start.value)
       },
       eventDeleteHandling: "Update",
+      onEventDelete: (args) => {
+        if (!window.confirm("Do you really want to delete this event?") ) {
+          args.preventDefault();
+        }
+      },
+      onEventDeleted: (args) => {
+        
+        
+      props.handleEventDelete(args.e.data._id)
+        console.log("Deleted");
+      },
       onEventClick: async (args) => {
         const dp = this.calendar;
         const colors = [
@@ -90,13 +120,16 @@ class Calendar extends Component {
           return;
         }
 
-this.props.setUpdateEvents(prev => ([...prev,{
-  _id: modal.result._id,
-  backColor: modal.result.backColor,
-  text: modal.result.text,
-  start: modal.result.start,
-  end: modal.result.end
-}]))
+        this.props.setUpdateEvents((prev) => [
+          ...prev,
+          {
+            _id: modal.result._id,
+            backColor: modal.result.backColor,
+            text: modal.result.text,
+            start: modal.result.start,
+            end: modal.result.end,
+          },
+        ]);
 
         dp.events.update(modal.result);
       },
@@ -109,16 +142,16 @@ this.props.setUpdateEvents(prev => ([...prev,{
 
   componentDidMount() {
     const events = this.props.events;
-    console.log(this.props.events)
+    // console.log(this.props.events);
     const startDate = "2023-03-07";
 
     this.calendar.update({ startDate, events });
   }
-  componentDidUpdate(){
+  componentDidUpdate() {
     const events = this.props.events;
-    console.log(this.props.events)
+    // console.log(this.props.events);
     const startDate = "2023-03-07";
-    this.calendar.update({  startDate, events  })  
+    this.calendar.update({ startDate, events });
   }
 
   render() {
@@ -139,7 +172,11 @@ this.props.setUpdateEvents(prev => ([...prev,{
           />
         </div>
         <div style={styles.main}>
-          <DayPilotCalendar startDate={"2023-03-07"}{...this.state} ref={this.calendarRef} />
+          <DayPilotCalendar
+            startDate={"2023-03-07"}
+            {...this.state}
+            ref={this.calendarRef}
+          />
         </div>
       </div>
     );

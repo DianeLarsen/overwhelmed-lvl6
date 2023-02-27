@@ -9,7 +9,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
-
+import CloudinaryUploadWidget from "../../Widget/CloudinaryUploadWidget";
 
 // import { useLocation } from "react-router-dom";
 import { useContext } from "react";
@@ -19,7 +19,7 @@ import { useState } from "react";
 
 const Profile = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
-  const { userState } = useContext(AuthContext);
+  const { userState, setSettings } = useContext(AuthContext);
 
  
 
@@ -27,8 +27,7 @@ const Profile = () => {
     <div className="profile">
       
           <div className="images">
-            {/* <img src={"/upload/"+data.coverPic} alt="" className="cover" />
-            <img src={"/upload/"+data.profilePic} alt="" className="profilePic" /> */}
+          <CloudinaryUploadWidget setSettings={setSettings} />
           </div>
           <div className="profileContainer">
             <div className="uInfo">
