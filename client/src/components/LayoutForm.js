@@ -42,7 +42,7 @@ function notSaved(e){
     // console.log(layoutInputs);
     setLayout(layoutInputs);
   }
-  console.log(!layoutDisplay && layout !== "")
+  // console.log(!layoutDisplay && layout !== "")
   return (
     <div className="public">
       <form className="layout" onBlur={notSaved}>

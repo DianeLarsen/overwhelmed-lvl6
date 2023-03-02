@@ -22,7 +22,7 @@ const { addTask } = props
       [name]: value
     }))
   }
-console.log(imgURL)
+
 
   function handleSubmit(e){
     e.preventDefault()

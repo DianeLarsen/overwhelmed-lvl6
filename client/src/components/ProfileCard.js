@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./ProfileImage.scss";
+
 import { AuthContext } from "../context/authContext";
 import { PicContext } from "../context/picUploadContext";
+import { ConfirmContext } from "../context/ConfirmContext";
 
 export default function ProfileCard() {
   const { userState, updateUser } = useContext(AuthContext);
   const { myWidget, imgURL, setImgURL } = useContext(PicContext);
+  const { Confirm } = useContext(ConfirmContext);
   const { user } = userState;
 
   const { name, profilePicture, goal, status, tasks } = user;
@@ -18,7 +21,6 @@ export default function ProfileCard() {
 
   const [active, setActive] = useState(false);
 
-
   function handleChange(e) {
     const { name, value } = e.target;
     setInputs((prevInputs) => ({
@@ -26,48 +28,74 @@ export default function ProfileCard() {
       [name]: value,
     }));
   }
- 
 
   function handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(e);
     updateUser(inputs);
-    setActive(!active)
-   }
- 
-
+    setActive(!active);
+  }
+console.log(active)
   function handlePictureUpload() {
     updateUser({ profilePicture: imgURL });
     setImgURL("");
   }
-function notSaved(e){
-  if (active){
-    if(!window.confirm("You are currently editing, Are you done (OK) or would you like to keep editing  (Cancel)?")){
-      e.preventDefault()
-
-    } else {
-      handleSubmit(e)
+  function notSaved(e) {
+    if (active) {
+      Confirm.open({
+        title: "Profile Image",
+        message:
+          "Would you like to Save or Cancel your Changes?  note: if Cancelled changes will be lost",
+        okText: "Save",
+        cancelText: "Cancel",
+        onok: () => {
+          handleSubmit(e);
+        },
+        oncancel: () => {
+          return;
+        },
+      });
     }
   }
-}
 
+  function imgClickHandler() {
+    Confirm.open({
+      title: "Profile Image",
+      message: "Would you like to Change or Remove your Profile Image?",
+      okText: "Change",
+      cancelText: "Remove",
+      onok: () => {
+        myWidget.open();
+      },
+      oncancel: () => {
+        updateUser({
+          profilePicture:
+            "https://res.cloudinary.com/dqjh46sk5/image/upload/v1677786781/zpoquv2r7p88ahgupk0d.jpg",
+        });
+      },
+    });
+  }
   return (
-    <div className="body" >
+    <div className="body">
       <div className="card" onBlur={notSaved}>
-        <label className="custom-file-upload fas">
+        <div className="custom-file-upload">
           <div
             className="img-wrap"
-            onClick={() => myWidget.open()}
+            onClick={() => imgClickHandler()}
             title="Click to change Profile Picture"
           >
-            <img alt="" src={profilePicture} />
+            {profilePicture === "" ? (
+              <i className="fa-solid fa-upload img-upload"></i>
+            ) : (
+              <img alt="" src={profilePicture} />
+            )}
           </div>
           {imgURL && (
             <button onClick={handlePictureUpload}>Click to Confirm</button>
           )}
-        </label>
+        </div>
         <div className="name">{name}</div>
         <br />
-        
+
         {!active ? (
           <div className="status">
             <div className="goal">Goal: {goal}</div>
@@ -78,7 +106,7 @@ function notSaved(e){
             <div className="field">
               <label htmlFor="goal">goal:</label>
               <textarea
-              id="goal"
+                id="goal"
                 className="goal"
                 value={inputs.goal}
                 name="goal"
@@ -96,20 +124,21 @@ function notSaved(e){
                 required
               />
             </div>
-           
-            </>
+          </>
         )}
-        {active && <button
-        title="Submit"
+        {active && (
+          <button
+            title="Submit"
             type="submit"
-              className="profileBtn"
-              onClick={handleSubmit}
-            >
-              <i className={`fa-solid fa-check`}></i>
-            </button>}
-        
+            className="profileBtn"
+            onClick={handleSubmit}
+          >
+            <i className={`fa-solid fa-check`}></i>
+          </button>
+        )}
+
         <br />
-        
+
         {!active && (
           <button
             type="button"
@@ -120,9 +149,7 @@ function notSaved(e){
             <i className={`fa-solid fa-pen`}></i>
           </button>
         )}
-        <div className="name">
-          Tasks completed: {tasks ? tasks.length : 0}
-        </div>
+        <div className="name">Tasks completed: {tasks ? tasks.length : 0}</div>
       </div>
     </div>
   );

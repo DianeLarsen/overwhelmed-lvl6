@@ -10,7 +10,7 @@ export default function Tasks() {
   const { userState, addTask } = useContext(AuthContext);
 
   const { user, tasks } = userState;
-console.log(tasks)
+
   const { name } = user;
 
 

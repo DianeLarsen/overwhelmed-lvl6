@@ -159,7 +159,7 @@ export const AuthContextProvider = ({ children }) => {
       })
       .catch((err) => console.log(err.response.data.errMsg));
   }
-console.log(userState)
+
   // GET USER TASKS
   function getUserTasks() {
     userAxios

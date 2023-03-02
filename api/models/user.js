@@ -40,7 +40,7 @@ const userSchema = new Schema({
   profilePicture: {
     type: String,
     default:
-      "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true",
+      "https://res.cloudinary.com/dqjh46sk5/image/upload/v1677786781/zpoquv2r7p88ahgupk0d.jpg",
   },
   friends: {
     type: Array,
