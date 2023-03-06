@@ -1,4 +1,7 @@
+@import "../../style.scss";
+
 .welcomeNavbar {
+    @include themify($themes) {
     background: #fff;
     max-width: 1400px;
     margin: 0 auto;
@@ -7,5 +10,9 @@
     align-items: center;
     justify-content: space-between;
     color: #333;
-   
+    height: 50px;
+    position: sticky;
+    top: 0;
+    background-color: themed("bg");
+}
 }

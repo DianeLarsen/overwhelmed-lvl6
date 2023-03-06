@@ -12,11 +12,9 @@ const { token } = props
     <div className="welcome">
       <div className="card">
         <div className="left">
-          <h1>Hello World.</h1>
+          <h1>Overwhelemed?</h1>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero cum,
-            alias totam numquam ipsa exercitationem dignissimos, error nam,
-            consequatur.
+            We are here to help.  Custom task lists that fit your availability and lifestyle.
           </p>
           
          {!token && <> <Link to="/register">

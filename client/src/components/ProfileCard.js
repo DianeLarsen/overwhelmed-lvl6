@@ -83,8 +83,9 @@ console.log(active)
             onClick={() => imgClickHandler()}
             title="Click to change Profile Picture"
           >
-            {profilePicture === "" ? (
-              <i className="fa-solid fa-upload img-upload"></i>
+            {imgURL ? (
+               <img alt="" src={imgURL } />
+              // <i className="fa-solid fa-upload img-upload"></i>
             ) : (
               <img alt="" src={profilePicture} />
             )}

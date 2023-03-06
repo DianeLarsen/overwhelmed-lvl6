@@ -26,6 +26,7 @@ $themes: (
     bgSoft: #333,
     textColorSoft: lightgray,
     border: #444,
+    gradient: linear-gradient (to left, #222, #444)
   ),
 );
 
@@ -53,12 +54,32 @@ $themes: (
 }
 
 @mixin mobile {
-  @media (max-width: 480px) {
+  @media (max-width: 550px) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media (max-width: 676px) {
+    @content;
+  }
+}
+@mixin laptop {
+  @media (max-width: 715px) {
     @content;
   }
 }
 @mixin tablet {
   @media (max-width: 960px) {
+    @content;
+  }
+}
+@mixin things {
+  @media (max-width: 1025px) {
+    @content;
+  }
+}
+@mixin PC {
+  @media (max-width: 1210px) {
     @content;
   }
 }

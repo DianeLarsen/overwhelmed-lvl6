@@ -12,7 +12,7 @@ const WelcomeNav = () => {
 
   return (
     <div className="welcomeNavbar">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/welcome" style={{ textDecoration: "none" }}>
           <span>Overwhelemd</span>
         </Link>
         

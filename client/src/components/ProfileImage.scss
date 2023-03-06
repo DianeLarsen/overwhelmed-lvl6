@@ -11,13 +11,14 @@
   
   
   .card{
-    width: 30%;
+    width: 350px;
     height: auto;
     padding: 15px;
     margin-top: 40px;
     border-radius: 25px;
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
     box-shadow: 15px 10px 25px 0px  #3fa1a9;
     background: #fff;
