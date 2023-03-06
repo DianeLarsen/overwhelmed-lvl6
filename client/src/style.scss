@@ -18,6 +18,7 @@ $themes: (
     bgSoft: #f6f3f3,
     textColorSoft: #555,
     border: lightgray,
+    menu: #e7e4e4,
   ),
   dark: (
     textColor: whitesmoke,
@@ -26,7 +27,8 @@ $themes: (
     bgSoft: #333,
     textColorSoft: lightgray,
     border: #444,
-    gradient: linear-gradient (to left, #222, #444)
+    gradient: linear-gradient (to left, #222, #444),
+    menu: #2c2c2c,
   ),
 );
 

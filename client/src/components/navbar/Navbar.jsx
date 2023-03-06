@@ -8,10 +8,11 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 import HamburgerMenu from "../hamburger/Hamburger";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
@@ -19,6 +20,10 @@ const Navbar = () => {
   const { userState, logout } = useContext(AuthContext);
   const { user } = userState;
   const { name, profilePicture } = user;
+  const [notifications, setNotifications] = useState(2);
+  const textInput = React.useRef(null);
+
+  const setFocus = React.useCallback(() => { textInput.current.focus() });
 
   return (
     <div className="navbar">
@@ -42,13 +47,11 @@ const Navbar = () => {
             />
           )}
         </div>
-
-        
       </div>
-      <div className="search">
-          <SearchOutlinedIcon />
-          <input type="text" placeholder="Search..." />
-        </div>
+      <div className="search" onClick={setFocus} tabindex="-1">
+        <SearchOutlinedIcon />
+        <input className="searchInput"ref={textInput}type="text" placeholder="Search..." />
+      </div>
       <div className="right">
         <input id="menu-toggle" type="checkbox" />
         <label class="menu-button-container" for="menu-toggle">
@@ -56,38 +59,41 @@ const Navbar = () => {
         </label>
         <ul class="menu">
           <li>
-            <Link to="/profile">
-              <div className="user">
-                <img src={profilePicture} alt="" />
-                <span>{name}</span>
-              </div>
+            <Link
+              className="link user"
+              to="/profile"
+              style={{ textDecoration: "none" }}
+            >
+              <img src={profilePicture} alt="" />
             </Link>
+            <span>{name}</span>
           </li>
           <li>
-            {" "}
+            <Link className="link" to="/feed" title={`You have ${notifications} notifications.`} >
             <NotificationsOutlinedIcon />
+            </Link>
             <span>Notifications</span>
           </li>
           <li>
-            <Link to="/tasks">
+            <Link className="link" to="/tasks">
               <HomeOutlinedIcon />
             </Link>
             <span>Tasks</span>
           </li>
+         
           <li>
-            <Link to="/feed" title="Feed">
-              <GridViewOutlinedIcon />
-            </Link>
-            <span>Feed</span>
-          </li>
-          <li>
-            <Link to="/settings">
+            <Link className="link" to="/settings">
               <SettingsIcon />
             </Link>
             <span>Settings</span>
           </li>
           <li>
-            <button onClick={logout}>logout</button>
+           
+            <button onClick={logout}>
+              <LogoutIcon />
+            </button>
+
+            <span>Logout</span>
           </li>
         </ul>
       </div>
